@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+  
+<head>
+    <script>
+        class Stage {
+            static GatherInput = new Stage("gatherinput")
+            static OperatorPressed = new Stage("operatorpressed")
+            static ResultReturned = new Stage("resultreturned")
+            constructor(name) {
+                this.name = name
+            }
+        }
+        var stage = Stage.GatherInput
+        var equation = []
+        var currNum = "";
+
+        function numberPushed(val) {
+            if (stage == Stage.GatherInput) {
+                currNum += val;
+            } else if (stage == Stage.OperatorPressed) {
+                currNum = val;
+            } else if (stage == Stage.ResultReturned) {
+                equation = [];
+                currNum = val;
+            }
+            stage = Stage.GatherInput;
+            display();
+        }
+
+        function operatorPushed(val) {
+            if (currNum.length) {
+                addToEquation(val);
+                stage = Stage.OperatorPressed;
+            }
+        }
+
+        function clearPushed() {
+            equation = [];
+            currNum = "";
+            display();
+        }
+
+        function flipSign() {
+            if (currNum.length && currNum[0] == '-') {
+                currNum = currNum.substring(1, currNum.length);
+            } else {
+                currNum = '-' + currNum;
+            }
+            stage = Stage.GatherInput;
+            display();
+        }
+
+        function addToEquation(val) {
+            equation.push(currNum);
+            equation.push(val);
+            currNum = "";
+        }
+
+        function display() {
+            document.getElementById("displayWindow").value = currNum;
+        }
+
+        function solve() {
+            if (stage == Stage.GatherInput) {
+                equation.push(currNum)
+            }
+  
+            console.log('going to solve:', equation)
+            fetch('/solver/', { 
+                method: 'POST',
+                body: JSON.stringify(equation) 
+                })
+                .then(Result => Result.json())
+                .then(val => {
+                    currNum = val.toString();
+                    equation = [];
+                    display();
+                    stage = Stage.ResultReturned;
+                })
+                .catch(errorMsg => { console.log(errorMsg); });
+        }
+    </script>  
+    
+
+    <style>
+        table {
+            margin-left: auto;
+            margin-right: auto;
+            background-color: black;
+        }
+
+        input[type="button"] {
+            width: 100%;
+            width: 120px;
+            height: 120px;
+            color: black;
+            font-size: 36px;
+            font-weight: bold;
+            border: none;
+        }
+
+        input[type="button"]:hover {
+            box-shadow: inset 0 0 120px 120px rgba(255, 255, 255, 0.3);
+        }
+
+        .numberButton {
+            background-color: lightyellow;
+        }
+
+        .operatorButton {
+            background-color: lightBlue;
+        }
+
+        .clearButton {
+            background-color: PaleTurquoise;
+        }
+
+        input[type="text"] {
+            width: 240px;
+            height: 118px;
+            font-size: 36px;
+            font-weight: bold;
+            border: none;
+        }
+    </style>
+</head>
+<!-- create table -->
+  
+<body>
+    <table id="calculator">
+        <tr>
+            <td colspan="2"><input type="text" id="displayWindow"></td>
+            <!-- clr() function will call clr to clear all value -->
+            <td><input class="clearButton" type="button" value="c" onclick="clearPushed()" /> </td>
+            <td><input class="operatorButton" type="button" value="-/+" onclick="flipSign()" /> </td>
+
+        </tr>
+        <tr>
+            <!-- create button and assign value to each button -->
+            <!-- dis("1") will call function dis to display value -->
+            <td><input class="numberButton" type="button" value="1" onclick="numberPushed('1')"> </td>
+            <td><input class="numberButton" type="button" value="2" onclick="numberPushed('2')"> </td>
+            <td><input class="numberButton" type="button" value="3" onclick="numberPushed('3')"> </td>
+            <td><input class="operatorButton" type="button" value="/" onclick="operatorPushed('/')"> </td>
+        </tr>
+        <tr>
+            <td><input class="numberButton" type="button" value="4" onclick="numberPushed('4')"> </td>
+            <td><input class="numberButton" type="button" value="5" onclick="numberPushed('5')"> </td>
+            <td><input class="numberButton" type="button" value="6" onclick="numberPushed('6')"> </td>
+            <td><input class="operatorButton" type="button" value="*" onclick="operatorPushed('*')"> </td>
+        </tr>
+        <tr>
+            <td><input class="numberButton" type="button" value="7" onclick="numberPushed('7')"> </td>
+            <td><input class="numberButton" type="button" value="8" onclick="numberPushed('8')"> </td>
+            <td><input class="numberButton" type="button" value="9" onclick="numberPushed('9')"> </td>
+            <td><input class="operatorButton" type="button" value="-" onclick="operatorPushed('-')"> </td>
+        </tr>
+        <tr>
+            <td><input class="numberButton" type="button" value="0" onclick="numberPushed('0')"> </td>
+            <td><input class="operatorButton" type="button" value="." onclick="numberPushed('.')"> </td>
+            <td><input class="operatorButton" type="button" value="=" onclick="solve()"> </td>
+            <td><input class="operatorButton" type="button" value="+" onclick="operatorPushed('+')"> </td>
+        </tr>
+    </table>
+</body>
+</html>  

@@ -1,0 +1,33 @@
+table {
+    margin-left: auto;
+    margin-right: auto;
+    background-color: black;
+}
+
+input[type="button"] {
+    width: 100%;
+    padding: 40px 40px;
+    color: black;
+    font-size: 24px;
+    font-weight: bold;
+    border: none;
+}
+
+.numberButton {
+  background-color: mintCream;
+}
+
+.operatorButton {
+  background-color: lightBlue;
+}
+
+.clearButton {
+  background-color: PaleTurquoise;
+}
+
+input[type="text"] {
+    padding: 40px 40px;
+    font-size: 24px;
+    font-weight: bold;
+    border: none;
+}
