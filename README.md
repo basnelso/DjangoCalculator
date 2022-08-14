@@ -15,7 +15,11 @@ $ python -m pip install Django
 
 ### 4. Run server
 
-Go into the root directory of this project and run
+Go into the root folder of the django project 
+```bash
+$ cd DjangoCalculator/calculator
+```
+and then run
 ```bash
 $ python .\manage.py runserver
 ```
